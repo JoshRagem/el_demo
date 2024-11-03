@@ -1,0 +1,30 @@
+# FIXME: in real life do password/secret management
+
+services:
+  api:
+    image: api:dev
+    init: true
+    build:
+      context: ./whc/
+      target: builder
+    ports:
+      - "4000:4000"
+    environment:
+      - DATABASE_URL=ecto://el:abc132dev@postgres/whc
+      - SECRET_KEY_BASE=y+RJwqDnvhWMMS6uFPaWiSpFjviUBuqj9uNVwtsFQrZVTI9nZBQKgjRdevdevdev
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: [mix, phx.server]
+
+  postgres:
+    image: postgres:17-bookworm
+    environment:
+      - POSTGRES_PASSWORD=abc132root
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "pg_isready", "-Upostgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
