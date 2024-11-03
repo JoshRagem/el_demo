@@ -23,7 +23,7 @@ provider "aws" {
               "ecs:*",
               "logs:*",
               "route53:*",
-              "secretsmanager:*",
+              "secretsmanager:*"
             ],
             "Resource": "*"
           }
@@ -63,7 +63,7 @@ resource "aws_subnet" "public" {
 }
 
 
-resource "aws_security_group" "vpc_endpoint" {
+resource "aws_security_group" "vpc_endpoints" {
   name_prefix = "vpc-endpoints."
   description = "Default security group for VPC endpoints"
 
@@ -87,7 +87,7 @@ resource "aws_security_group_rule" "subnet_ingress" {
 resource "aws_security_group_rule" "internet_access" {
   type              = "egress"
   description       = "Internet access"
-  security_group_id = aws_security_group.vpc_endpoint.id
+  security_group_id = aws_security_group.vpc_endpoints.id
   cidr_blocks       = ["0.0.0.0/0"]
   from_port         = 0
   to_port           = 0
@@ -106,7 +106,7 @@ resource "aws_vpc_endpoint" "interface_endpoint" {
   vpc_endpoint_type = "Interface"
 
   subnet_ids         = aws_subnet.public.*.id
-  security_group_ids = [aws_security_group.vpc_endpoint.id]
+  security_group_ids = [aws_security_group.vpc_endpoints.id]
 
   private_dns_enabled = true
 

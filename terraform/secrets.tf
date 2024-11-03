@@ -30,5 +30,5 @@ resource "aws_secretsmanager_secret" "el_db_url" {
 
 resource "aws_secretsmanager_secret_version" "el_db_url" {
   secret_id = aws_secretsmanager_secret.el_db_url.id
-  secret_string = "ecto://el:${random_password.el_pg_password}@${aws_db_instance.whc.address}/${aws_db_instance.db.db_name}"
+  secret_string = "ecto://el:${random_password.el_pg_password.result}@${aws_db_instance.whc.address}/${aws_db_instance.whc.db_name}"
 }

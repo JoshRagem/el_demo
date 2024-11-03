@@ -1,6 +1,6 @@
 resource "aws_db_subnet_group" "whc" {
   name       = "whc_rds"
-  subnet_ids = aws_aws_subnet.public.*.id
+  subnet_ids = aws_subnet.public.*.id
 
   tags = {
     Name = "whc_rds"
@@ -27,7 +27,7 @@ resource "aws_db_instance" "whc" {
   instance_class              = "db.t4g.medium"
   manage_master_user_password = true
   username                    = "postgres"
-  availability_zone           = [var.availability_zones[1]]
+  availability_zone           = var.availability_zones[0]
   vpc_security_group_ids      = [aws_security_group.whc_rds.id]
   db_subnet_group_name        = aws_db_subnet_group.whc.name
   multi_az                    = false

@@ -33,7 +33,7 @@ resource "aws_security_group_rule" "internet_to_alb_https_ingress" {
 # -----------------------------------------------------------------------------
 
 resource "aws_lb" "el_demo" {
-  name_prefix        = "el_demo."
+  name_prefix        = "eldemo"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb.id]
@@ -42,7 +42,7 @@ resource "aws_lb" "el_demo" {
 }
 
 resource "aws_lb_target_group" "el_demo_api" {
-  name        = "el_demo_api"
+  name        = "el-demo-api"
   port        = 4000
   protocol    = "HTTP"
   vpc_id      = aws_vpc.el_demo.id
@@ -63,12 +63,12 @@ resource "aws_lb_listener" "https" {
   certificate_arn = aws_acm_certificate.el_demo.arn
 
   default_action {
-    target_group_arn = aws_lb_target_group.http.id
+    target_group_arn = aws_lb_target_group.el_demo_api.arn
     type             = "forward"
   }
 
   depends_on = [
-    aws_acm_certificate_validation.tls_cert
+    aws_acm_certificate_validation.el_demo
   ]
 }
 
