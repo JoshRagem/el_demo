@@ -12,8 +12,6 @@ defmodule Whc.Application do
       Whc.Repo,
       {DNSCluster, query: Application.get_env(:whc, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Whc.PubSub},
-      # Start the Finch HTTP client for sending emails
-      {Finch, name: Whc.Finch},
       # Start a worker by calling: Whc.Worker.start_link(arg)
       # {Whc.Worker, arg},
       # Start to serve requests, typically the last entry
