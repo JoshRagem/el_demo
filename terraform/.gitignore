@@ -1,0 +1,3 @@
+.terraform
+config.s3.tfbackend
+*.tfvars
