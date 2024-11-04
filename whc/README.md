@@ -1,18 +1,19 @@
-# Whc
+# Whc Api
 
-To start your Phoenix server:
+An api-only Phoenix app with one added resource+controller (`Whc.Sites`) and one plug (`Whc.Plugs.Healthz`)
 
-  * Run `mix setup` to install and setup dependencies
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+### Routes
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+- `/api/whcsites`
+- `/api/whcsites/:id`
+- `/healthz`
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+## Decisions
 
-## Learn more
+I decided to use Elixir+Phoenix for this to show how far I could get in a short time with unfamiliar tech. I had to read many pages of docs to extract just parts I needed for this task. I regret that I didn't find enough time to explore the test tooling for Phoenix.
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+I avoided rendering HTML in this app because I have little experience with website layout. However, it's clear that the whc site information is intended to be inlined into a webpage, as it contains HTML entities and locale properties for 'rtl' languages. I imagine that HTML could be added to this app with little difficulty and the api endpoint could  be extended to support features as they are built into the HTML side.
+
+### Difficulties
+
+Since I am managing the schema and data under `db/`, I didn't get to take advantage of Ecto's migrations and automatic making-sure-everything-is-named-the-same. I found this acceptable anyway because I was focused on deployability; having one server run migrations for one database is great for simple or local projects, but it tends to cause problems as projects grow bigger.
