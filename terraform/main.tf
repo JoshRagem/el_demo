@@ -20,9 +20,14 @@ provider "aws" {
           {
             "Effect": "Allow",
             "Action": [
+              "iam:*",
+              "ec2:*",
+              "acm:*",
               "ecs:*",
+              "elasticloadbalancing:*",
               "logs:*",
               "route53:*",
+              "rds:*",
               "secretsmanager:*"
             ],
             "Resource": "*"
@@ -43,11 +48,33 @@ locals {
 }
 
 resource "aws_vpc" "el_demo" {
-  cidr_block = var.cidr_block
-
+  cidr_block           = var.cidr_block
+  enable_dns_hostnames = true
+  enable_dns_support   = true
   lifecycle {
     prevent_destroy = true
   }
+}
+
+resource "aws_internet_gateway" "el_demo" {
+  vpc_id = aws_vpc.el_demo.id
+}
+
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.el_demo.id
+}
+
+resource "aws_route" "public_default" {
+  route_table_id         = aws_route_table.public.id
+  gateway_id             = aws_internet_gateway.el_demo.id
+  destination_cidr_block = "0.0.0.0/0"
+}
+
+resource "aws_route_table_association" "public" {
+  count = length(var.availability_zones)
+
+  route_table_id = aws_route_table.public.id
+  subnet_id      = aws_subnet.public[count.index].id
 }
 
 resource "aws_subnet" "public" {
@@ -61,7 +88,6 @@ resource "aws_subnet" "public" {
     SubnetType = "public"
   }
 }
-
 
 resource "aws_security_group" "vpc_endpoints" {
   name_prefix = "vpc-endpoints."
@@ -111,6 +137,6 @@ resource "aws_vpc_endpoint" "interface_endpoint" {
   private_dns_enabled = true
 
   tags = {
-    Name      = "el_demo.${each.key}"
+    Name = "el_demo.${each.key}"
   }
 }

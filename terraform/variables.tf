@@ -26,6 +26,10 @@ variable "availability_zones" {
   default     = ["us-east-1a"]
 }
 
+variable "kms_key_id" {
+  type = string
+  description = "KMS key to manage db master password"
+}
 variable "domain_name" {
   type        = string
   description = "The domain name to access el_demo"

@@ -21,6 +21,26 @@ resource "aws_security_group" "api" {
   }
 }
 
+resource "aws_security_group_rule" "task_internet_access" {
+  type              = "egress"
+  description       = "Internet access"
+  security_group_id = aws_security_group.api.id
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 0
+  to_port           = 0
+  protocol          = -1
+}
+
+resource "aws_security_group_rule" "alb_to_task_ingress" {
+  type                     = "ingress"
+  description              = "ALB ingress"
+  security_group_id        = aws_security_group.api.id
+  source_security_group_id = aws_security_group.alb.id
+  from_port                = 4000
+  to_port                  = 4000
+  protocol                 = "tcp"
+}
+
 data "aws_iam_policy_document" "assume_ecs" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -49,8 +69,8 @@ resource "aws_iam_role_policy_attachment" "ecs_task_app" {
 }
 
 resource "aws_iam_policy" "ecs_task_execution" {
-    name = "el-demo-task-execution"
-    policy = data.aws_iam_policy_document.ecs_task_execution.json
+  name   = "el-demo-task-execution"
+  policy = data.aws_iam_policy_document.ecs_task_execution.json
 }
 data "aws_iam_policy_document" "ecs_task_execution" {
   statement {
@@ -77,8 +97,8 @@ data "aws_iam_policy_document" "ecs_task_execution" {
 }
 
 resource "aws_iam_policy" "ecs_task_app" {
-    name = "el-demo-task"
-    policy = data.aws_iam_policy_document.ecs_task_app.json
+  name   = "el-demo-task"
+  policy = data.aws_iam_policy_document.ecs_task_app.json
 }
 data "aws_iam_policy_document" "ecs_task_app" {
   statement {
@@ -102,7 +122,7 @@ resource "aws_ecs_task_definition" "api" {
   memory                   = 2048
 
   execution_role_arn = aws_iam_role.ecs_task_execution.arn
-  task_role_arn      = aws_iam_role.ecs_task_app.arn
+  task_role_arn      = aws_iam_role.ecs_task_execution.arn
 
   container_definitions = jsonencode([
     {
@@ -160,7 +180,7 @@ resource "aws_ecs_service" "api" {
   network_configuration {
     security_groups  = [aws_security_group.api.id]
     subnets          = aws_subnet.public.*.id
-    assign_public_ip = false
+    assign_public_ip = true
   }
 
   force_new_deployment = true

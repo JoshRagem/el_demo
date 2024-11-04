@@ -19,6 +19,20 @@ services:
         condition: service_healthy
     command: [mix, phx.server]
 
+  api-release:
+    image: api:dev
+    init: true
+    build:
+      context: ./whc/
+    ports:
+      - "4000:4000"
+    environment:
+      - DATABASE_URL=ecto://el:abc132dev@postgres/whc
+      - SECRET_KEY_BASE=y+RJwqDnvhWMMS6uFPaWiSpFjviUBuqj9uNVwtsFQrZVTI9nZBQKgjRdevdevdev
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   postgres:
     image: postgres:17-bookworm
     environment:

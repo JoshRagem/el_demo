@@ -17,6 +17,11 @@ resource "aws_security_group" "whc_rds" {
   }
 }
 
+data "aws_security_group" "vpc_default" {
+  vpc_id = aws_vpc.el_demo.id
+  name   = "default"
+}
+
 resource "aws_security_group_rule" "el_demo_api_ingress" {
   type                     = "ingress"
   description              = "DB ingress from demo api"
@@ -28,17 +33,19 @@ resource "aws_security_group_rule" "el_demo_api_ingress" {
 }
 
 resource "aws_db_instance" "whc" {
+  apply_immediately           = true
+  publicly_accessible = true
   allocated_storage           = 5
   storage_type                = "standard"
-  db_name                     = "whc"
+  storage_encrypted           = true
   identifier                  = "whc"
-  engine                      = "postgresql"
+  engine                      = "postgres"
   engine_version              = "16.4"
   instance_class              = "db.t4g.medium"
   manage_master_user_password = true
   username                    = "postgres"
   availability_zone           = var.availability_zones[0]
-  vpc_security_group_ids      = [aws_security_group.whc_rds.id]
+  vpc_security_group_ids      = [aws_security_group.whc_rds.id, data.aws_security_group.vpc_default.id]
   db_subnet_group_name        = aws_db_subnet_group.whc.name
   multi_az                    = false
 }
