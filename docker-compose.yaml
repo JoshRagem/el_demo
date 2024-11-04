@@ -13,7 +13,7 @@ services:
       - DATABASE_URL=ecto://el:abc132dev@postgres/whc
       - SECRET_KEY_BASE=y+RJwqDnvhWMMS6uFPaWiSpFjviUBuqj9uNVwtsFQrZVTI9nZBQKgjRdevdevdev
     volumes: 
-      - ./whc:/apps
+      - ./whc:/app
     depends_on:
       postgres:
         condition: service_healthy
