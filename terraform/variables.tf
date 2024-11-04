@@ -4,7 +4,7 @@ variable "aws_region" {
 }
 
 variable "tf_role_arn" {
-  type = string
+  type        = string
   description = "Role arn for terraform plan/apply to use"
 }
 
@@ -23,15 +23,15 @@ variable "subnet_cidr_block" {
 variable "availability_zones" {
   type        = list(string)
   description = "Names of availbility zones to use"
-  default = [ "us-east-1a" ]
+  default     = ["us-east-1a"]
 }
 
 variable "domain_name" {
-  type = string
+  type        = string
   description = "The domain name to access el_demo"
 }
 
 variable "api_image" {
-  type = string
+  type        = string
   description = "Docker image for el demo api container"
 }

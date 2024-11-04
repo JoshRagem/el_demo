@@ -17,6 +17,16 @@ resource "aws_security_group" "whc_rds" {
   }
 }
 
+resource "aws_security_group_rule" "el_demo_api_ingress" {
+  type                     = "ingress"
+  description              = "DB ingress from demo api"
+  source_security_group_id = aws_security_group.api.id
+  security_group_id        = aws_security_group.whc_rds.id
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+}
+
 resource "aws_db_instance" "whc" {
   allocated_storage           = 5
   storage_type                = "standard"
