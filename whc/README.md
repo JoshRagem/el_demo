@@ -17,3 +17,5 @@ I avoided rendering HTML in this app because I have little experience with websi
 ### Difficulties
 
 Since I am managing the schema and data under `db/`, I didn't get to take advantage of Ecto's migrations and automatic making-sure-everything-is-named-the-same. I found this acceptable anyway because I was focused on deployability; having one server run migrations for one database is great for simple or local projects, but it tends to cause problems as projects grow bigger.
+
+The postgrex connection to RDS was difficult to debug. In the end, I recognised a situation that I ran into years ago--the ssl requirements of psql and postgrex (via erlang `ssl`) don't exactly match. The right way to fix this is to have a cert file in the api image that postgrex can use to verify the RDS server identity. I currently have ecto configured to `:verify_none`--this is acceptable for the moment because the security group rules only allow traffic from know, trusted sources (my subnets)
