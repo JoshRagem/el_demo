@@ -16,9 +16,19 @@ defmodule WhcWeb.SiteJSON do
   end
 
   defp data(%Site{} = site) do
+    # TODO: i18n here?
     %{
       id: site.id,
-      name_en: site.name_en
+      name: site.name_en,
+      short_description: site.short_description_en,
+      justification: site.justification_en,
+      date_inscribed: site.date_inscribed,
+      danger: site.danger,
+      danger_list: site.danger_list,
+      longitude: site.longitude,
+      latitude: site.latitude,
+      states_name: site.states_name_en,
+      region: site.region_en
     }
   end
 end
